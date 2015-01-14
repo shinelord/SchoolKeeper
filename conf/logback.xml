@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!-- 应用名称,存放日志的文件夹 -->
+	<property name="APP_NAME" value="SchoolKeeper" />
+	<!--日志文件的保存路径,首先查找系统属性-Dlog.dir,如果存在就使用其;否则，在当前目录下创建名为logs目录做日志存放的目录 -->
+	<property name="LOG_HOME" value="${log.dir:-log}/${APP_NAME}" />
+	<!-- 日志输出格式 -->
+	<property name="ENCODER_PATTERN" value="%d{yyyy-MM-dd  HH:mm:ss} [%thread] %-5level %logger{80} - %msg%n" />
+	<contextName>${APP_NAME}</contextName>
+
+	<!-- 控制台日志：输出全部日志到控制台 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<param name="Threshold" value="DEBUG" />  
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>${ENCODER_PATTERN}</Pattern>
+		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+	
+
+  <!-- 程序主线程日志 -->
+	<appender name="MAIN_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/main_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+	
+	<!-- 程序异步线程分析日志 -->
+	<appender name="ANALYSE_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/analyse_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+
+	<!-- 程序处理异常和错误日志 -->
+	<appender name="ERROR_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/error_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+	
+	<!-- 数据库操作日志 -->
+	<appender name="DBCONTROL_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/dbcontrol_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+	<!-- 访问百度时间延时日志 -->
+	<appender name="TIMEDELAY_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/timedelay_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>  
+		</layout>  
+	</appender>
+	<!-- 数据库日志 -->
+	<appender name="DB_LISTENNER" class="ch.qos.logback.classic.db.DBAppender">
+	    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+	       <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		      <driverClass>com.mysql.jdbc.Driver</driverClass>
+		      <url>jdbc:mysql://127.0.0.1:3306/mysql</url>
+		      <user>root</user>
+		      <password>root</password>
+	      </dataSource>
+	    </connectionSource>
+	</appender>
+	<logger name="mainlog" level="INFO" addtivity="true">
+		<appender-ref ref="MAIN_FILE" />
+	</logger>
+	<logger name="analyselog" level="INFO" addtivity="true">
+		<appender-ref ref="ANALYSE_FILE" />
+	</logger>
+	<logger name="errlog" level="ERROR" addtivity="true">
+		<appender-ref ref="ERROR_FILE" />
+	</logger>
+	
+	<logger name="dblog" level="INFO" addtivity="true">
+		<appender-ref ref="DBCONTROL_FILE" />
+	</logger>
+	<logger name="com.schoolkeeper" level="DEBUG" addtivity="true">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="timeDelaylog" level="INFO" addtivity="true">
+		<appender-ref ref="TIMEDELAY_FILE" />
+	</logger>
+	<logger name="dblitenerlog" level="INFO" addtivity="true">
+		<appender-ref ref="DB_LISTENNER" />
+	</logger>
+	<root>  
+    	<appender-ref ref="STDOUT" />          
+    </root>  
+    
+</configuration>
