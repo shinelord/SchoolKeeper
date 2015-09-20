@@ -43,7 +43,7 @@ public class XLogger {
 		if(null == DbLogger){
 			DbLogger = LoggerFactory.getLogger("dblog");
 		}
-		// StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+		//StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 		MainLogger.info("===================");
 		logger.debug("Hello {}", "debug message");
 		logger.debug("doing my job");
@@ -52,7 +52,7 @@ public class XLogger {
 				Thread.sleep(1000);
 				DbLogger.info("{}","测试...");
 			} catch (Exception e) {
-				
+				e.printStackTrace();
 			}
 		}
 	}
